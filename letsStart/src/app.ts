@@ -5,7 +5,7 @@ const app: express.Express = express();
 
 const port: number = 3000;
 
-// middleware (add next)
+//* logging middleware
 app.use(
   (req: express.Request, res: express.Response, next: express.NextFunction) => {
     console.log(req.rawHeaders[1]);
@@ -14,28 +14,63 @@ app.use(
   }
 );
 
-app.get(
-  "/cats/som",
-  (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    console.log(req.rawHeaders[1]);
-    console.log("this is som middleware");
-    next();
+//* JSON middleware
+app.use(express.json()); // for req.body
+
+//* READ 고양이 전체 데이터 조회
+app.get("/cats", (req: express.Request, res: express.Response) => {
+  try {
+    const cats = Cat;
+    // throw new Error("db connect error");
+    res.status(200).send({
+      success: true,
+      data: { cats },
+    });
+  } catch (error: any) {
+    res.status(400).send({
+      success: false,
+      error: error.message,
+    });
   }
-);
-
-// router
-app.get("/", (req: express.Request, res: express.Response) => {
-  res.send({ cats: [...Cat] });
 });
 
-app.get("/cats/blue", (req: express.Request, res: express.Response) => {
-  res.send({ blue: Cat[0] });
+//* READ 특정 고양이 데이터 조회
+// : (동적 라우팅)
+app.get("/cats/:id", (req: express.Request, res: express.Response) => {
+  try {
+    const { id } = req.params;
+    const cats = Cat.find((cat) => cat.id === id);
+    // throw new Error("db connect error");
+    res.status(200).send({
+      success: true,
+      data: { cats },
+    });
+  } catch (err: any) {
+    res.status(400).send({
+      success: false,
+      error: err.message,
+    });
+  }
 });
 
-app.get("/cats/som", (req: express.Request, res: express.Response) => {
-  res.send({ som: Cat[1] });
+//* CREATE 새로운 고양이 추가
+app.post("/cats", (req: express.Request, res: express.Response) => {
+  try {
+    const data = req.body;
+    Cat.push(data);
+    res.status(200).send({
+      success: true,
+      data,
+    });
+  } catch (err: any) {
+    res.status(400).send({
+      success: false,
+      error: err.message,
+    });
+  }
 });
 
+//* 404 middleware
 app.use(
   (req: express.Request, res: express.Response, next: express.NextFunction) => {
     console.log("this is error middleware");

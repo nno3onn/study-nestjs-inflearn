@@ -23,8 +23,7 @@ export const readAllCat = (req: Request, res: Response) => {
   }
 };
 
-//* READ 특정 고양이 데이터 조회 api -> GET
-// : (동적 라우팅)
+//* READ 특정 고양이 데이터 조회 api -> GET (:동적 라우팅)
 export const readCat = (req: Request, res: Response) => {
   try {
     const { id } = req.params;

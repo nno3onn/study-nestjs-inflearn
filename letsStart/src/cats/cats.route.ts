@@ -1,5 +1,4 @@
-import { Request, Response, Router } from "express";
-import { Cat, CatType } from "./cats.model";
+import { Router } from "express";
 import {
   createCat,
   deleteCat,

@@ -1,13 +1,14 @@
 import * as express from "express";
+import { Cat, CatType } from "./app.model";
 
 const app: express.Express = express();
 
 const port: number = 3000;
 
 // router
-app.get("/test", (req: express.Request, res: express.Response) => {
+app.get("/", (req: express.Request, res: express.Response) => {
   console.log(req);
-  res.send({ name: "heo da eun", age: 99, friends: ["1", "ss", "hi", "bb"] });
+  res.send({ cats: [...Cat] });
 });
 
 app.listen(port, () => {

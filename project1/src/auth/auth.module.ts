@@ -1,3 +1,4 @@
+import { ConfigModule } from '@nestjs/config';
 import { CatsModule } from './../cats/cats.module';
 import { JwtStrategy } from './jwt/jwt.strategy';
 import { forwardRef, Module } from '@nestjs/common';
@@ -7,11 +8,15 @@ import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
+    //* 환경 변수 설정
+    ConfigModule.forRoot(),
+
     //* strategy 기본 설정
     PassportModule.register({ defaultStrategy: 'jwt', session: true }),
+
     //* login
     JwtModule.register({
-      secret: 'secretKey',
+      secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '1y' },
     }),
 

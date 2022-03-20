@@ -10,13 +10,11 @@ export class CatsRepository {
   constructor(@InjectModel(Cat.name) private readonly catModel: Model<Cat>) {}
 
   async findCatByEmail(email: string): Promise<Cat | null> {
-    const cat = await this.catModel.findOne({ email });
-    return cat;
+    return await this.catModel.findOne({ email });
   }
 
   async existsByEmail(email: string): Promise<any> {
-    const result = await this.catModel.exists({ email }); // 중복 체크
-    return result;
+    return await this.catModel.exists({ email }); // 중복 체크
   }
 
   async create(cat: CatRequestDto): Promise<Cat> {

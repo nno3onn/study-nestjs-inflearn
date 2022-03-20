@@ -5,6 +5,7 @@ import { PassportStrategy } from '@nestjs/passport';
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
+    //* decode jwt token
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: 'secretKey',
@@ -12,5 +13,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  // async validate(payload) {}
+  //* token이 유효하면 실행됨
+  // jwt의 payload
+  async validate(payload) {}
+  // payload 유효성 검사
 }

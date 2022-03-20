@@ -16,6 +16,7 @@ export class AuthService {
     private jwtService: JwtService, // JwtModule
   ) {}
 
+  //* email, password로 jwt 토큰 생성 및 반환
   async jwtLogIn(data: LoginRequestDto) {
     const { email, password } = data;
 
@@ -37,8 +38,7 @@ export class AuthService {
     }
 
     //* jwt 토큰 생성
-    // sub: 토큰 제목
-    const payload = { email, sub: cat.id };
+    const payload = { email, sub: cat.id }; // sub: 토큰 제목
 
     return {
       token: this.jwtService.sign(payload),

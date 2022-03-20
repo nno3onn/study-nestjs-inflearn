@@ -1,32 +1,26 @@
-import { JwtAuthGuard } from './../auth/jwt/jwt.guard';
-import { LoginRequestDto } from './../auth/dto/login.request';
-import { AuthService } from './../auth/auth.service';
-import { SuccessInterceptor } from './../common/interceptors/success.interceptor';
-import { CatsService } from './cats.service';
+import { CatsService } from './../services/cats.service';
+import { multerOptions } from '../../common/utils/multer.options';
+import { JwtAuthGuard } from '../../auth/jwt/jwt.guard';
+import { LoginRequestDto } from '../../auth/dto/login.request';
+import { AuthService } from '../../auth/auth.service';
+import { SuccessInterceptor } from '../../common/interceptors/success.interceptor';
 import {
   Body,
   Controller,
-  Delete,
   Get,
-  HttpException,
-  HttpStatus,
-  Param,
-  ParseIntPipe,
-  Patch,
   Post,
-  Put,
-  Req,
+  UploadedFiles,
   UseFilters,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { HttpExceptionFilter } from 'src/common/exceptions/http-exception.filter';
-import { CatRequestDto } from './dto/cats.request.dto';
-import { Cat } from './cats.schema';
+import { CatRequestDto } from '../dto/cats.request.dto';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { ReadOnlyCatDto } from './dto/cat.dto';
-import { Request } from 'express';
+import { ReadOnlyCatDto } from '../dto/cat.dto';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { Cat } from '../cats.schema';
 
 @UseInterceptors(SuccessInterceptor)
 @UseFilters(HttpExceptionFilter)
@@ -68,9 +62,17 @@ export class CatsController {
   //* 로그아웃
   // - 필요없음. 왜냐하면 front에서 jwt를 제거하면 로그아웃되기 때문
 
+  //* 업로드한 고양이 이미지를 서버 폴더에 저장
   @ApiOperation({ summary: '고양이 이미지 업로드' })
-  @Post('upload/cats')
-  uploadCatImg() {
-    return 'uploadImg';
+  // FilesInterceptor(fieldName, maxCount, MulterOptions) -> 폴더 및 파일 자동 생성
+  @UseInterceptors(FilesInterceptor('image', 10, multerOptions('cats')))
+  @UseGuards(JwtAuthGuard)
+  @Post('upload')
+  uploadCatImg(
+    @UploadedFiles() files: Array<Express.Multer.File>,
+    @CurrentUser() cat: Cat,
+  ) {
+    // return { image: `http://localhost:3000/media/cats/${files[0].filename}` };
+    return this.catsService.uploadImg(cat, files);
   }
 }

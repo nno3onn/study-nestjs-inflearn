@@ -54,12 +54,21 @@ export class Cat extends Document {
     description: 'cats image',
     required: false,
   })
-  @Prop()
+  @Prop({
+    // default 이미지 설정
+    default:
+      'https://www.google.com/url?sa=i&url=https%3A%2F%2Fm.hankookilbo.com%2FNews%2FRead%2FA2021110907490005315&psig=AOvVaw3t0cDLeyWVMpFW_HXOozmx&ust=1647904599321000&source=images&cd=vfe&ved=0CAsQjRxqFwoTCKDuz5fp1fYCFQAAAAAdAAAAABAK',
+  })
   @IsString()
   imgUrl: string;
 
   // 가상 field
-  readonly readOnlyData: { id: string; email: string; password: string };
+  readonly readOnlyData: {
+    id: string;
+    email: string;
+    name: string;
+    imgUrl: string;
+  };
 }
 
 // class Cat을 schema로 만들어줌
@@ -73,5 +82,6 @@ CatSchema.virtual('readOnlyData').get(function (this: Cat) {
     id: this.id,
     email: this.email,
     name: this.name,
+    imgUrl: this.imgUrl,
   };
 });

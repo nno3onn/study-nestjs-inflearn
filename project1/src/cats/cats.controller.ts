@@ -1,3 +1,4 @@
+import { JwtAuthGuard } from './../auth/jwt/jwt.guard';
 import { LoginRequestDto } from './../auth/dto/login.request';
 import { AuthService } from './../auth/auth.service';
 import { SuccessInterceptor } from './../common/interceptors/success.interceptor';
@@ -16,6 +17,7 @@ import {
   Put,
   Req,
   UseFilters,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { HttpExceptionFilter } from 'src/common/exceptions/http-exception.filter';
@@ -23,6 +25,8 @@ import { CatRequestDto } from './dto/cats.request.dto';
 import { Cat } from './cats.schema';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { ReadOnlyCatDto } from './dto/cat.dto';
+import { Request } from 'express';
+import { CurrentUser } from 'src/common/decorators/user.decorator';
 
 @UseInterceptors(SuccessInterceptor)
 @UseFilters(HttpExceptionFilter)
@@ -34,9 +38,10 @@ export class CatsController {
   ) {}
 
   @ApiOperation({ summary: '현재 고양이 가져오기' })
+  @UseGuards(JwtAuthGuard)
   @Get()
-  getCurrentCat() {
-    return 'current cat';
+  getCurrentCat(@CurrentUser() cat: ReadOnlyCatDto) {
+    return cat;
   }
 
   @ApiResponse({
@@ -51,7 +56,6 @@ export class CatsController {
   @ApiOperation({ summary: '회원가입' })
   @Post()
   async signUp(@Body() catRequestDto: CatRequestDto) {
-    console.log(catRequestDto);
     return await this.catsService.signUp(catRequestDto);
   }
 
@@ -59,12 +63,6 @@ export class CatsController {
   @Post('login')
   logIn(@Body() data: LoginRequestDto) {
     return this.authService.jwtLogIn(data);
-  }
-
-  @ApiOperation({ summary: '로그아웃' })
-  @Post('logout')
-  logOut() {
-    return 'logout';
   }
 
   @ApiOperation({ summary: '고양이 이미지 업로드' })

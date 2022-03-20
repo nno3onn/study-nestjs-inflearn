@@ -19,6 +19,8 @@ import {
 import { HttpExceptionFilter } from 'src/common/exceptions/http-exception.filter';
 import { CatRequestDto } from './dto/cats.request.dto';
 import { Cat } from './cats.schema';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ReadOnlyCatDto } from './dto/cat.dto';
 
 @UseInterceptors(SuccessInterceptor)
 @UseFilters(HttpExceptionFilter)
@@ -26,32 +28,41 @@ import { Cat } from './cats.schema';
 export class CatsController {
   constructor(private readonly catsService: CatsService) {}
 
-  //* 현재 로그인한 고양이 정보 불러오기
+  @ApiOperation({ summary: '현재 고양이 가져오기' })
   @Get()
   getCurrentCat() {
     return 'current cat';
   }
 
-  //* 회원가입
+  @ApiResponse({
+    status: 400,
+    description: 'Server Error',
+  })
+  @ApiResponse({
+    status: 200,
+    description: '성공!',
+    type: ReadOnlyCatDto,
+  })
+  @ApiOperation({ summary: '회원가입' })
   @Post()
   async signUp(@Body() catRequestDto: CatRequestDto) {
     console.log(catRequestDto);
     return await this.catsService.signUp(catRequestDto);
   }
 
-  //* 로그인
+  @ApiOperation({ summary: '로그인' })
   @Post('login')
   logIn() {
     return 'login';
   }
 
-  //* 로그아웃
+  @ApiOperation({ summary: '로그아웃' })
   @Post('logout')
   logOut() {
     return 'logout';
   }
 
-  //* 이미지 업로드
+  @ApiOperation({ summary: '고양이 이미지 업로드' })
   @Post('upload/cats')
   uploadCatImg() {
     return 'uploadImg';

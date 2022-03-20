@@ -19,14 +19,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   // jwt의 payload
   async validate(payload: Payload) {
     // payload 유효성 검사
-
+    // - 보안상 이유로 request.user에 저장할 때, password 필드를 제외하고 저장하는 것이 좋음
     const cat = await this.catsRepository.findCatByIdWithoutPassword(
       payload.sub,
     );
 
     if (!cat) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('접근 오류');
     }
-    return cat; // request.user에 들어감
+    return cat; // request.user에 cat이 들어감
   }
 }

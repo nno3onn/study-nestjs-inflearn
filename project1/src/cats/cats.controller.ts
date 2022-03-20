@@ -40,8 +40,8 @@ export class CatsController {
   @ApiOperation({ summary: '현재 고양이 가져오기' })
   @UseGuards(JwtAuthGuard)
   @Get()
-  getCurrentCat(@CurrentUser() cat: ReadOnlyCatDto) {
-    return cat;
+  getCurrentCat(@CurrentUser() cat) {
+    return cat.readOnlyData;
   }
 
   @ApiResponse({
@@ -64,6 +64,9 @@ export class CatsController {
   logIn(@Body() data: LoginRequestDto) {
     return this.authService.jwtLogIn(data);
   }
+
+  //* 로그아웃
+  // - 필요없음. 왜냐하면 front에서 jwt를 제거하면 로그아웃되기 때문
 
   @ApiOperation({ summary: '고양이 이미지 업로드' })
   @Post('upload/cats')

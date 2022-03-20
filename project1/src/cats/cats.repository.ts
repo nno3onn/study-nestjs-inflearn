@@ -9,7 +9,12 @@ export class CatsRepository {
   //* mongoose schema를 사용할 수 있도록 함
   constructor(@InjectModel(Cat.name) private readonly catModel: Model<Cat>) {}
 
-  async existsByEmail(email: string): Promise<boolean> {
+  async findCatByEmail(email: string): Promise<Cat | null> {
+    const cat = await this.catModel.findOne({ email });
+    return cat;
+  }
+
+  async existsByEmail(email: string): Promise<any> {
     const result = await this.catModel.exists({ email }); // 중복 체크
     return result;
   }

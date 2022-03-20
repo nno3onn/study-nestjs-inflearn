@@ -1,4 +1,4 @@
-// request-> middleware -> interceptior -> pipe-> controller -> service -> interceptor -> exception -> response
+// request-> middleware -> guard -> interceptior -> pipe-> controller -> service -> interceptor -> exception -> response
 // - interceptor: 성공 시 res 응답 형식을 정함
 // - exception filter: 실패 시 res 응답 형식을 정함
 

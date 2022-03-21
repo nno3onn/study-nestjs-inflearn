@@ -7,6 +7,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
+import { CommentsModule } from './comments/comments.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { AuthModule } from './auth/auth.module';
     }),
     CatsModule,
     AuthModule,
+    CommentsModule,
   ], // CatsModule, UsersModule에서 exports한 것들을 controller(소비자)에서 사용할 수 있음
   controllers: [AppController], // 소비자
   providers: [AppService], // 생산자 (service, repository, ...)

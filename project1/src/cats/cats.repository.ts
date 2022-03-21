@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Cat } from './cats.schema';
+import { Types } from 'mongoose';
 
 @Injectable()
 export class CatsRepository {
@@ -22,7 +23,9 @@ export class CatsRepository {
     return newCat.readOnlyData;
   }
 
-  async findCatByIdWithoutPassword(catId: string): Promise<Cat | null> {
+  async findCatByIdWithoutPassword(
+    catId: string | Types.ObjectId,
+  ): Promise<Cat | null> {
     return await this.catModel.findById(catId).select('-password');
   }
 

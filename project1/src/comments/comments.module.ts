@@ -1,3 +1,4 @@
+import { CatsModule } from './../cats/cats.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CommentsService } from './services/comments.service';
 import { Module } from '@nestjs/common';
@@ -12,6 +13,7 @@ import { Comments, CommentsSchema } from './comments.schema';
         schema: CommentsSchema,
       },
     ]),
+    CatsModule,
   ],
   providers: [CommentsService],
   controllers: [CommentsController],

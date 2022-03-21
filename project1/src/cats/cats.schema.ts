@@ -1,3 +1,4 @@
+import { Comments } from './../comments/comments.schema';
 import { ApiProperty } from '@nestjs/swagger';
 import { Prop, Schema, SchemaFactory, SchemaOptions } from '@nestjs/mongoose';
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
@@ -69,19 +70,33 @@ export class Cat extends Document {
     name: string;
     imgUrl: string;
   };
+
+  readonly comments: Comments[];
 }
 
 // class Cat을 schema로 만들어줌
-export const CatSchema = SchemaFactory.createForClass(Cat);
+const _CatSchema = SchemaFactory.createForClass(Cat);
 
 //* virtual: client에게 보여줄 데이터만 작성
 // 실제 db에 있는 값이 아닌, 가상 데이터
 // readOnlyData : field명
-CatSchema.virtual('readOnlyData').get(function (this: Cat) {
+_CatSchema.virtual('readOnlyData').get(function (this: Cat) {
   return {
     id: this.id,
     email: this.email,
     name: this.name,
     imgUrl: this.imgUrl,
+    comments: this.comments,
   };
 });
+
+// comments: 필드명
+_CatSchema.virtual('comments', {
+  ref: 'comments',
+  localField: '_id',
+  foreignField: 'info',
+});
+_CatSchema.set('toObject', { virtuals: true });
+_CatSchema.set('toJSON', { virtuals: true });
+
+export const CatSchema = _CatSchema;

@@ -1,9 +1,11 @@
+import { CommentsSchema } from './../comments/comments.schema';
 import { CatRequestDto } from './dto/cats.request.dto';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Cat } from './cats.schema';
 import { Types } from 'mongoose';
+import mongoose from 'mongoose';
 
 @Injectable()
 export class CatsRepository {
@@ -11,7 +13,12 @@ export class CatsRepository {
   constructor(@InjectModel(Cat.name) private readonly catModel: Model<Cat>) {}
 
   async findAll() {
-    return await this.catModel.find();
+    const CommentsModel = mongoose.model('comments', CommentsSchema);
+
+    const result = await this.catModel
+      .find()
+      .populate('comments', CommentsModel); // populate: Comments 모델의 comments 필드도 같이 띄워줌
+    return result;
   }
 
   async findByIdAndUpdateImg(id: string, fileName: string) {

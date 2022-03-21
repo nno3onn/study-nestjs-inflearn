@@ -9,6 +9,10 @@ export class CatsRepository {
   //* mongoose schema를 사용할 수 있도록 함
   constructor(@InjectModel(Cat.name) private readonly catModel: Model<Cat>) {}
 
+  async findAll() {
+    return await this.catModel.find();
+  }
+
   async findByIdAndUpdateImg(id: string, fileName: string) {
     const cat = await this.catModel.findById(id);
 
